@@ -1,8 +1,9 @@
-import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { useForm } from "react-hook-form";
 import { Dispatch, SetStateAction } from "react";
+import { toast } from "sonner";
+import { TeamTable } from "../tables/team-table";
 
 type Props = {
   teams: string[];
@@ -12,49 +13,31 @@ type Props = {
 export function TeamForm({ teams, setTeams }: Props) {
   const form = useForm();
   const handleSubmit = form.handleSubmit((data) => {
-    setTeams((prev) => [...prev, data.Team]);
-    form.setValue("Team", "");
+    if (data.team === "") {
+      toast.error("Preencha o campo <nome do time>");
+      return;
+    }
+    setTeams((prev) => [...prev, data.team]);
+    form.setValue("team", "");
   });
 
-  function removeItem(index: number) {
-    setTeams((prev) => prev.filter((_, indexOf) => indexOf !== index));
-  }
   return (
     <>
-      <form onSubmit={handleSubmit}>
-        <div className="flex justify-center items-end gap-2 w-full max-w-lg">
-          <Label className="text-sm font-medium text-zinc-600 flex-1">
-            Team 1
-            <Input
-              {...form.register("Team")}
-              className="placeholder:text-zinc-300 placeholder:font-normal outline-none"
-              placeholder="Team 1"
-              type="text"
-              id="Team"
-            />
-          </Label>
+      <form className="" onSubmit={handleSubmit}>
+        <div className="flex justify-center items-end gap-2 w-full">
+          <Input
+            {...form.register("team")}
+            className="placeholder:text-zinc-300 placeholder:font-normal outline-none"
+            placeholder="nome do time"
+            type="text"
+            id="Team"
+          />
+
           <Button>Add</Button>
         </div>
       </form>
 
-      <div className="py-3 space-y-3 max-w-lg">
-        {teams.map((team, index) => (
-          <div key={index} className="flex justify-between items-center">
-            <label
-              htmlFor="terms"
-              className="flex items-center text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              <p>{team}</p>
-            </label>
-            <button
-              onClick={() => removeItem(index)}
-              className="text-orange-600 font-medium hover:underline"
-            >
-              remover
-            </button>
-          </div>
-        ))}
-      </div>
+      {teams.length > 0 && <TeamTable setTeams={setTeams} teams={teams} />}
     </>
   );
 }
