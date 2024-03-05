@@ -68,7 +68,7 @@ export default function App() {
           Site desenvolvido por{" "}
           <a
             target="_blank"
-            className="font-medium text-orange-500/70 hover:text-orange-500 hover:underline"
+            className="font-medium text-orange-500 hover:underline"
             href="https://herbertduarte.vercel.app"
           >
             Herbert Duarte
