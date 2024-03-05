@@ -38,7 +38,7 @@ export default function App() {
       <header className="p-4 bg-white fixed flex justify-between items-center border-b border-zinc-100 w-full">
         <div className="flex gap-3 justify-center items-center">
           <Trophy className="text-orange-600" />
-          <p className="text-2xl pb-1">repart</p>
+          <p className="text-2xl font-light text-zinc-500 pb-1">repart</p>
         </div>
       </header>
       <main className="w-full flex-1 flex justify-start items-center flex-col pt-20 sm:pt-14">
