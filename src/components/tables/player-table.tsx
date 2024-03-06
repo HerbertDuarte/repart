@@ -10,7 +10,7 @@ export function PlayerTable({ players, setPlayers }: Props) {
     setPlayers((prev) => prev.filter((_, indexOf) => indexOf !== index));
   }
   return (
-    <div className="border mb-4  rounded">
+    <div className="border mb-4  rounded-lg overflow-hidden">
       <div className="flex justify-between items-center border-b py-1 px-3">
         <p className="text-zinc-400 text-sm">Jogador</p>
         <p className="text-zinc-400 text-sm">Ação</p>
