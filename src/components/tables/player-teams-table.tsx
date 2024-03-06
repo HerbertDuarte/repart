@@ -27,8 +27,8 @@ export function PlayerTeamsTable({ result, setResult }: Props) {
             key={index}
             className="flex justify-between items-center py-1.5 px-3 text-sm border-b font-medium"
           >
-            <p className="w-1/3 ">{item.player}</p>
-            <p className="w-1/3 text-center">{item.team}</p>
+            <p className="w-1/3 text-nowrap">{item.player}</p>
+            <p className="w-1/3 text-center text-nowrap">{item.team}</p>
             <button
               onClick={() => removeItem(index)}
               className="w-1/3 text-right text-orange-500 text-sm hover:underline"
