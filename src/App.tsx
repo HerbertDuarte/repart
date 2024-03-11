@@ -1,11 +1,16 @@
-import { BookText, GitCompareArrows, PercentSquare, Trophy } from "lucide-react";
+import { BookText, GitCompareArrows, PercentSquare } from "lucide-react";
 import { Button } from "./components/ui/button";
 import { TeamForm } from "./components/forms/teams-form";
 import { PlayerForm } from "./components/forms/player-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { PlayerTeamsTable } from "./components/tables/player-teams-table";
 import { MatchsTable } from "./components/tables/matchs-table";
+import { Footer } from "./components/layout/footer";
+import { Header } from "./components/layout/header";
+import { Title } from "./components/ui/title";
+import { StyledSection } from "./components/ui/styled-section";
+import { Separator } from "./components/ui/separator";
 
 type PlayerWithTeam = {
   player: string;
@@ -18,26 +23,34 @@ type Match = {
 };
 
 export default function App() {
-  const [players, setPlayers] = useState<string[]>([]);
-  const [teams, setTeams] = useState<string[]>([]);
-  const [result, setResult] = useState<PlayerWithTeam[]>([]);
-  const [matchs, setMatchs] = useState<Match[]>([]);
+  const [players, setPlayers] = useState<string[]>(
+    JSON.parse(String(localStorage.getItem("players"))) || []
+  );
+  const [teams, setTeams] = useState<string[]>(
+    JSON.parse(String(localStorage.getItem("teams"))) || []
+  );
+  const [result, setResult] = useState<PlayerWithTeam[]>(
+    JSON.parse(String(localStorage.getItem("result"))) || []
+  );
+  const [matchs, setMatchs] = useState<Match[]>(
+    JSON.parse(String(localStorage.getItem("matchs"))) || []
+  );
 
   function definePlayerTeams() {
     if (teams.length !== players.length) {
       toast.error("O número de jogadores é diferente do número de times");
       return;
     }
-    const playersWithoutTeams: PlayerWithTeam[] = [];
+    const playersTeams: PlayerWithTeam[] = [];
     const handleTeams = teams.sort(() => Math.random() - 0.5);
 
     players.forEach((player, index) => {
       const teamIndex = index % handleTeams.length;
       const team = handleTeams[teamIndex];
-      playersWithoutTeams.push({ player, team });
+      playersTeams.push({ player, team });
     });
 
-    setResult(playersWithoutTeams);
+    setResult(playersTeams);
     scrollToBottom();
   }
 
@@ -54,7 +67,6 @@ export default function App() {
         player2: randomPlayers[i + 1],
       });
     }
-
     setMatchs(playersMatchs);
     scrollToBottom();
   }
@@ -68,67 +80,64 @@ export default function App() {
     }, 500);
     clearTimeout(delay);
   }
+  useEffect(() => {
+    localStorage.setItem("matchs", JSON.stringify(matchs));
+  }, [matchs]);
+
+  useEffect(() => {
+    localStorage.setItem("result", JSON.stringify(result));
+  }, [result]);
 
   return (
-    <div className="flex flex-col min-h-dvh w-full justify-start items-center overflow-x-hidden">
-      <header className="p-4 bg-white fixed flex justify-between items-center border-b border-zinc-100 w-full">
-        <div className="flex gap-3 justify-center items-center">
-          <Trophy className="text-orange-600" />
-          <p className="text-2xl font-light text-zinc-500 pb-1">repart</p>
-        </div>
-      </header>
+    <>
+      <Header />
       <main className="w-full flex-1 flex justify-start items-center flex-col pt-20 sm:pt-14">
-        <div className="p-4 sm:p-8 pb-6 w-full max-w-3xl">
-          <h1 className="pb-6 text-xl text-zinc-500 font-semibold flex items-center gap-2">
-            <BookText className="text-primary"/>
+        <StyledSection>
+          <Title>
+            <BookText className="text-primary" />
             Formulário
-          </h1>
+          </Title>
           <PlayerForm players={players} setPlayers={setPlayers} />
           <TeamForm teams={teams} setTeams={setTeams} />
-
           <Button className="my-4" onClick={() => definePlayerTeams()}>
             Repartir
           </Button>
-        </div>
-        {result.length > 0 && <div className="h-px w-screen bg-zinc-100" />}
+        </StyledSection>
         {result.length > 0 && (
-          <div className="w-full p-4 sm:p-8 max-w-3xl">
-            <h1 className="pb-6 text-xl text-zinc-500 font-semibold flex items-center gap-2">
-            <PercentSquare className="text-primary"/>
-              Repartição
-            </h1>
-            <PlayerTeamsTable result={result} setResult={setResult} />
-            <Button onClick={() => defineMatchPlayers()} className="my-4 mr-2">
-              mata-mata
-            </Button>
-          </div>
-        )}
+          <>
+            <Separator />
 
-        {matchs.length > 0 && <div className="h-px w-screen bg-zinc-100" />}
+            <StyledSection>
+              <Title>
+                <PercentSquare className="text-primary" />
+                Repartição
+              </Title>
+              <PlayerTeamsTable result={result} setResult={setResult} />
+              <Button
+                onClick={() => defineMatchPlayers()}
+                className="my-4 mr-2"
+              >
+                mata-mata
+              </Button>
+            </StyledSection>
+          </>
+        )}
 
         {matchs.length > 0 && (
-          <div className="p-4 sm:p-8 pb-6 w-full max-w-3xl">
-            <h1 className="pb-6 text-xl text-zinc-500 font-semibold flex items-center gap-2">
-            <GitCompareArrows className="text-primary"/>
+          <>
+            <Separator />
 
-              Confrontos
-            </h1>
-            <MatchsTable matchs={matchs} setMatchs={setMatchs} />
-          </div>
+            <StyledSection>
+              <Title>
+                <GitCompareArrows className="text-primary" />
+                Confrontos
+              </Title>
+              <MatchsTable matchs={matchs} setMatchs={setMatchs} />
+            </StyledSection>
+          </>
         )}
       </main>
-      <footer className="text-sm w-full text-center border-t border-zinc-100 bg-white p-0.5 text-zinc-400">
-        <p>
-          Site desenvolvido por{" "}
-          <a
-            target="_blank"
-            className="font-medium text-orange-500 hover:underline"
-            href="https://herbertduarte.vercel.app"
-          >
-            Herbert Duarte
-          </a>
-        </p>
-      </footer>
-    </div>
+      <Footer />
+    </>
   );
 }

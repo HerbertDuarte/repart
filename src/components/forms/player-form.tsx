@@ -1,7 +1,7 @@
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { useForm } from "react-hook-form";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { toast } from "sonner";
 import { PlayerTable } from "../tables/player-table";
 
@@ -20,6 +20,10 @@ export function PlayerForm({ players, setPlayers }: Props) {
     setPlayers((prev) => [...prev, data.player]);
     form.setValue("player", "");
   });
+
+  useEffect(() => {
+    localStorage.setItem("players", JSON.stringify(players));
+  }, [players]);
 
   return (
     <>
