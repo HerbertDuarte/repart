@@ -91,7 +91,7 @@ export default function App() {
   return (
     <>
       <Header />
-      <main className="w-full flex-1 flex justify-start items-center flex-col pt-20 sm:pt-14">
+      <main className="w-full flex-1 flex justify-start items-center flex-col pt-20 sm:pt-14 overflow-x-hidden">
         <StyledSection>
           <Title>
             <BookText className="text-primary" />
